@@ -40,17 +40,18 @@ async function getZipStatsData(url){
   var cbsa = getStats(4, cbsX).map(t=> [t[0],convert2Int(t[1])]);
   var merge = stats.concat(census).concat(other).concat(ssb).concat(cbsa);
   var out = [reg(/\d{5}/.exec(url),0), merge];
-console.log(out);
-return out;
+  console.log(out);
+  return out;
 }
 
 async function getZipcodes(url){
   var temp = [];
   var doc = await getDoc(url);
   var table = Array.from(tn(cn(doc, 'statTable')[0],'tr'));
+console.log(table);
   table.shift();
-  var zips = table.map(t=> tn(tn(t,'td')[0],'a')[0].href);
-  zips.forEach(z=> temp.push(z));
+  var zips = table.map(t=> tn(t,'a')[0]);
+  zips.forEach(z=> { if(z) temp.push(z.href) });
   return temp;
 }
 
@@ -79,7 +80,11 @@ async function loopThroughZips(url){
   }
   console.log(containArr);
 }
+
 loopThroughZips('https://www.zip-codes.com/city/ga-atlanta.asp')
+containArr.map(t=> {
+return {"zip": t[0], "city": t[1][1][1], "lat": t[1][5][1], "lng": t[1][6][1], "population": t[1][7][1]}
+})
 
 
 
