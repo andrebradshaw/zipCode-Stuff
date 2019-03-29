@@ -82,11 +82,14 @@ async function loopThroughZips(url){
 }
 
 loopThroughZips('https://www.zip-codes.com/city/ga-atlanta.asp')
-containArr.map(t=> {
+
+var atlantaZips = containArr.map(t=> {
 return {"zip": t[0], "city": t[1][1][1], "lat": t[1][5][1], "lng": t[1][6][1], "population": t[1][7][1]}
 })
 
-
+atlantaZips.forEach(z=> {
+if(atlMetroZips.some(x=> x.zip == z.zip) ===false) atlMetroZips.push(z);
+});
 
 // looper(targetUrl);
 
