@@ -83,14 +83,15 @@ async function loopThroughZips(url){
 
 loopThroughZips('https://www.zip-codes.com/city/ga-atlanta.asp')
 
-var atlantaZips = containArr.map(t=> {
+//then
+var kscmetro = [];
+var ksc = containArr.map(t=> {
 return {"zip": t[0], "city": t[1][1][1], "lat": t[1][5][1], "lng": t[1][6][1], "population": t[1][7][1]}
 })
 
-atlantaZips.forEach(z=> {
-if(atlMetroZips.some(x=> x.zip == z.zip) ===false) atlMetroZips.push(z);
+ksc.forEach(z=> {
+if(kscmetro.some(x=> x.zip == z.zip) === false && z.population > 0) kscmetro.push(z);
 });
-
 // looper(targetUrl);
 
 // getZipStatsData('https://www.zip-codes.com/zip-code/39901/zip-code-39901.asp')
