@@ -1,3 +1,5 @@
+var geodata = []; /* this should be replaced with the json file containing the data from zip-codes.com */
+
 var targetZipLatLng = (zp,arr) => arr.filter(z=> z.zip == zp)[0];
 
 function dist(targ1,targ2) {
@@ -15,4 +17,4 @@ function dist(targ1,targ2) {
 var start = targetZipLatLng("35080", geodata);
 var end = targetZipLatLng("35143", geodata);
 var distance = dist(start,end);
-console.log(distance)
+console.log(distance);
