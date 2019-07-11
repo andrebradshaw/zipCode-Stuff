@@ -3,8 +3,8 @@ var geodata = []; /* this should be replaced with the json file containing the d
 var targetZipLatLng = (zp,arr) => arr.filter(z=> z.zip == zp)[0];
 
 function dist(targ1,targ2) {
-  var lat1 = targ1.latitude, lng1 = targ1.longitude, 
-    lat2 = targ2.latitude, lng2 = targ2.longitude;
+  var lat1 = targ1.lat, lng1 = targ1.lng, 
+    lat2 = targ2.lat, lng2 = targ2.lng;
   var p = 0.017453292519943295;
   var c = Math.cos;
   var a = 0.5 - c((lat2 - lat1) * p) / 2 +
