@@ -31,11 +31,11 @@ function downloadr(arr2D, filename) {
     }, 10);
   }
 }
-// 
 
-function getZipsInTargetRadius(zip,miles){
+function getZipsInTargetRadius(miles){
   var graph = [];
   for(var i=0; i<geodata.length; i++){
+    console.log(geodata[i].zip)
     var nearby = [];
     var start = geodata[i];
     for(var z=0; z<geodata.length; z++){
@@ -46,5 +46,17 @@ function getZipsInTargetRadius(zip,miles){
     var obj = {target: geodata[i].zip, nearby: nearby};
     graph.push(obj);
   }
-downloadr(graph, 'zipgraph_test.json');
+  var mapped = mapZipGraph(graph);
+  downloadr(mapped, 'zipgraph_'+miles+'_miles_apart.json');
 }
+
+function mapZipGraph(chuncked){
+  var containArr = [];
+  var allZips = chunked.map(el=> el.target);
+  chuncked.forEach(el=> {
+    if(containArr.every(itm=> el.nearby.every(z=> itm != z))) containArr.push(el.target);
+  });
+  return containArr;
+}
+
+getZipsInTargetRadius(50);
