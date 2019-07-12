@@ -3,7 +3,6 @@ This shit is probably best suited to be run on your machine, not the browser. It
 Give it a couple of minutes to run.
 
 */
-
 var gi = (o, s) => o ? o.getElementById(s) : console.log(o);
 var tn = (o, s) => o ? o.getElementsByTagName(s) : console.log(o);
 var ele = (t) => document.createElement(t);
@@ -213,7 +212,6 @@ async function createDownloadBtns(geodata) {
   function getZipsInTargetRadius(miles) {
     var graph = [];
     for (var i = 0; i < geodata.length; i++) {
-      gi(document,'download_header').innerText = Math.ceil(((i+1)/geodata.length)*100)+' complete';
       var nearby = [];
       var start = geodata[i];
       for (var z = 0; z < geodata.length; z++) {
@@ -228,7 +226,6 @@ async function createDownloadBtns(geodata) {
       graph.push(obj);
     }
     var mapped = mapZipGraph(graph);
-    gi(document,'download_header').innerText = '100% complete';
     downloadr(mapped, 'zipgraph_' + miles + '_miles_apart.json');
   }
 
