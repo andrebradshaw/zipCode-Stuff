@@ -1,3 +1,4 @@
+var unq = (arr) => arr.filter((e, p, a) => a.indexOf(e) == p);
 var geodata = fileArray.filter(el=> el.land_area); /* filter removes zipcodes with zero land area */
 
 var targetZipLatLng = (zp,arr) => arr.filter(z=> z.zip == zp)[0];
@@ -35,7 +36,7 @@ function downloadr(arr2D, filename) {
 function getZipsInTargetRadius(miles){
   var graph = [];
   for(var i=0; i<geodata.length; i++){
-    console.log(geodata[i].zip)
+    console.log(geodata[i].zip);
     var nearby = [];
     var start = geodata[i];
     for(var z=0; z<geodata.length; z++){
@@ -50,13 +51,13 @@ function getZipsInTargetRadius(miles){
   downloadr(mapped, 'zipgraph_'+miles+'_miles_apart.json');
 }
 
-function mapZipGraph(chuncked){
+function mapZipGraph(chunked){
   var containArr = [];
   var allZips = chunked.map(el=> el.target);
-  chuncked.forEach(el=> {
+  chunked.forEach(el=> {
     if(containArr.every(itm=> el.nearby.every(z=> itm != z))) containArr.push(el.target);
   });
-  return containArr;
+  return unq(containArr);
 }
 
 getZipsInTargetRadius(50);
