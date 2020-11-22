@@ -8,12 +8,14 @@ var delay = (ms) => new Promise(res => setTimeout(res, ms));
 var linksToScrape = [];
 var containArr = [];
 
-var states = ["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","AS","GU","MP","PR","VI"];
+var states = ["GA"]
+
+//["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","AS","GU","MP","PR","VI"];
 
 
 var convert2Int = (s) => {
   if(/^0$/.test(s.trim())) return parseInt(s);
-  if(/\d/.test(s) === false) return s;
+  if(/\d/.test(s) === false || /\/|\(GMT/.test(s)) return s;
     var cln = s.replace(/,/g,'').replace(/\$/g,'').trim();
     var num = /\d\.\d/.test(cln) ? parseFloat(cln) : parseInt(cln);
     var out = num === NaN ? s : num;
@@ -39,10 +41,10 @@ async function getZipsByState(state){
 
 async function getZipStatsData(url){
   var cbsX = /CBSA:|CBSA Name:|CBSA Type:|CBSA Population:|MSA Name:|CBSA Division Population:/;
-  var sttX = /Zip|City:|State:|Counties|Multi|Latit|Long/;
+  var sttX = /Zip|City:|State:|Counties|Multi|Latit|Long|City Alias\(es\):|Time Zone:|Area Code:/;
   var doc = await getDoc(url);
   var getStats = (n,t) => Array.from(tn(tn(cn(doc, 'statTable')[n], 'tbody')[0],'tr'))
-	.map(tr=> [cn(tr,'label')[0].innerText, cn(tr,'info')[0].innerText])
+	.map(tr=> [cn(tr,'label')[0].innerText, cn(tr,'info')[0].innerHTML.replace(/\n/g,'').replace(/<br>/g,'|').replace(/<.+?>/g,'').replace(/&nbsp;/g,'').trim()])
 	.filter(label=> t.test(label)).map(i=> [toKey(i[0]), i[1]] );;
   var stats = getStats(0, sttX).map(t=> [t[0],convert2Int(t[1])]);
   var census = getStats(1, /./).map(t=> [t[0],convert2Int(t[1])]);
@@ -55,9 +57,11 @@ async function getZipStatsData(url){
 }
 
 function createObject(arr){
+console.log(arr)
   var multiFilt = (r,x) => r[1].filter(i=> x.test(i[0]))[0][1];
   var obj = {
    zip: arr[0],
+   alt_cities: multiFilt(arr,/^city alias/i),
    city: multiFilt(arr,/^city$/),
    state: multiFilt(arr,/^state$/),
    latitude: multiFilt(arr,/latitude/),
@@ -108,8 +112,46 @@ async function getLinksByState(){
 async function loopThroughLinks(){
   var path = await getLinksByState();
   for(var i=0; i<path.length; i++){
-    var obj = await getZipStatsData('https://www.zip-codes.com/zip-code/'+path[i]);
+    let obj = await getZipStatsData('https://www.zip-codes.com/zip-code/'+path[i]);
+    console.log(obj)
     containArr.push(obj);
-    await delay(rando(200)+2101);
+    await delay(rando(1200)+1101);
   }
 }
+loopThroughLinks()
+
+// american_indian_population: 0
+// annual_payroll: 540000
+// asian_population: 0
+// average_house_value: 0
+// avg_income_per_household: 0
+// black_population: 0
+// cbsa: 12060
+// cbsa_name: " Atlanta-Sandy Springs-Alpharetta, GA"
+// cbsa_population: 5268860
+// cbsa_type: " Metro"
+// city: "Marietta"
+// congressional_district: 6
+// female_median_age: 0
+// female_population: 0
+// hawaiian_population: 0
+// hispanic_population: 0
+// households: 0
+// land_area: 0
+// latitude: 33.9527
+// longitude: -84.5502
+// male_median_age: 0
+// male_population: 0
+// median_age: 0
+// num_business_mailboxes: 0
+// num_of_employees: 41
+// num_residential_mailboxes: 0
+// number_of_businesses: 8
+// other_population: 0
+// persons_per_household: 0
+// population: 0
+// state: "GA [Georgia]"
+// total_delivery_receptacles: 747
+// water_area: 0
+// white_population: 0
+// zip: "30007"
